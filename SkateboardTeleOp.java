@@ -131,6 +131,40 @@ public class SkateboardTeleOp extends OpMode
         backRightPower  *= speedMultiplier;
     }
 
+
+    /**
+     * Gets the speed for the front left wheel.
+     * Based on this paper <a href="http://thinktank.wpi.edu/resources/346/ControllingMecanumDrive.pdf">Controlling Mecanum Drive</a>
+     */
+    public double getFrontLeftMecanumVelocity(double robotVelocity, double robotHeading, double robotAngularVelocity)
+    {
+        return robotVelocity * Math.sin(robotHeading + (Math.PI / 4)) + robotAngularVelocity;
+    }
+    /**
+     * Gets the speed for the front right wheel.
+     * Based on this paper <a href="http://thinktank.wpi.edu/resources/346/ControllingMecanumDrive.pdf">Controlling Mecanum Drive</a>
+     */
+    public double getFrontRightMecanumVelocity(double robotVelocity, double robotHeading, double robotAngularVelocity)
+    {
+        return robotVelocity * Math.cos(robotHeading + (Math.PI / 4)) - robotAngularVelocity;
+    }
+    /**
+     * Gets the speed for the back left wheel.
+     * Based on this paper <a href="http://thinktank.wpi.edu/resources/346/ControllingMecanumDrive.pdf">Controlling Mecanum Drive</a>
+     */
+    public double getBackLeftMecanumVelocity(double robotVelocity, double robotHeading, double robotAngularVelocity)
+    {
+        return robotVelocity * Math.cos(robotHeading + (Math.PI / 4)) + robotAngularVelocity;
+    }
+    /**
+     * Gets the speed for the back rightwheel.
+     * Based on this paper <a href="http://thinktank.wpi.edu/resources/346/ControllingMecanumDrive.pdf">Controlling Mecanum Drive</a>
+     */
+    public double getBackRightMecanumVelocity(double robotVelocity, double robotHeading, double robotAngularVelocity)
+    {
+        return robotVelocity * Math.sin(robotHeading + (Math.PI / 4)) - robotAngularVelocity;
+    }
+
     public void runMotors()
     {
         frontLeftMotor.setPower(    frontLeftPower  );
