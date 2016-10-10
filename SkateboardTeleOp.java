@@ -43,7 +43,7 @@ public class SkateboardTeleOp extends OpMode
      * @param stickY The joystick's y value.
      * @return The joystick's heading in radians.
      */
-    public double joystickToRadians(float stickX, float stickY)
+    public static double joystickToRadians(double stickX, double stickY)
     {
         double radians = 0;
         // If stick is centered on the X axis
@@ -53,14 +53,14 @@ public class SkateboardTeleOp extends OpMode
             if (0 <= stickY)
             {
                 // Set direction to be straight forward
-                radians = (3*Math.PI)/2;
+                radians = Math.PI/2;
             }
             // If stick is pulled backward
             else if (stickY < 0)
             {
                 // TODO: Ensure that this is the correct value for "backwards" on a stick
                 // Set the direction to be backwards
-                radians = Math.PI/2;
+                radians = 3*Math.PI/2;
             }
 
         }
@@ -69,6 +69,10 @@ public class SkateboardTeleOp extends OpMode
             radians = Math.atan(stickY/stickX);
             if (stickX < 0) {
                 radians += Math.PI;
+            }
+            else if (0 < stickX && stickY < 0)
+            {
+                radians = 3*Math.PI/2 - radians;
             }
         }
         // Rotate the axis by 90 degrees
