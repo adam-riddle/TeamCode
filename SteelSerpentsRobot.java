@@ -16,24 +16,24 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class SteelSerpentsRobot
 {
 
-    float DEAD_ZONE = 0.15f;
-    HardwareMap hardwareMap;
-    DcMotor backLeftMotor;
-    DcMotor backRightMotor;
-    DcMotor frontLeftMotor;
-    DcMotor frontRightMotor;
-    double backLeftPower   = 0;
-    double backRightPower  = 0;
-    double frontLeftPower  = 0;
-    double frontRightPower = 0;
-    Servo servo;
-    Servo left;
-    Servo right;
-    Servo pusherr;
-    Servo pusherl;
-    I2cDevice range;
-    I2cDeviceReader rangeReader;
-    byte rangeReadings[];
+    public float DEAD_ZONE = 0.15f;
+    private HardwareMap hardwareMap;
+    private DcMotor backLeftMotor;
+    private DcMotor backRightMotor;
+    private DcMotor frontLeftMotor;
+    private DcMotor frontRightMotor;
+    private double backLeftPower   = 0;
+    private double backRightPower  = 0;
+    private double frontLeftPower  = 0;
+    private double frontRightPower = 0;
+    private Servo servo;
+    private Servo left;
+    private Servo right;
+    private Servo pusherr;
+    private Servo pusherl;
+    private I2cDevice range;
+    private I2cDeviceReader rangeReader;
+    private byte rangeReadings[];
 
     /**
      * Sets up the SteelSerpents robot by initializing its hardware.
