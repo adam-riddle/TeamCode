@@ -17,14 +17,14 @@ public class SkateboardTeleOp extends OpMode
     DcMotor backRightMotor;
     DcMotor frontLeftMotor;
     DcMotor frontRightMotor;
-    double backLeftPower;
-    double backRightPower;
-    double frontLeftPower;
-    double frontRightPower;
+    double backLeftPower   = 0;
+    double backRightPower  = 0;
+    double frontLeftPower  = 0;
+    double frontRightPower = 0;
     Servo servo;
     Servo left;
     Servo right;
-    Servo pusher;
+    Servo pusherr;
     I2cDevice range;
     I2cDeviceReader rangeReader;
     byte rangeReadings[];
@@ -46,7 +46,7 @@ public class SkateboardTeleOp extends OpMode
         servo = hardwareMap.servo.get("servo");
         left = hardwareMap.servo.get("left");
         right = hardwareMap.servo.get("right");
-        pusher = hardwareMap.servo.get("pusher");
+        pusherr = hardwareMap.servo.get("pusherr");
         backLeftMotor = hardwareMap.dcMotor.get("backl");
         backRightMotor = hardwareMap.dcMotor.get("backr");
         frontLeftMotor = hardwareMap.dcMotor.get("frontl");
@@ -54,9 +54,9 @@ public class SkateboardTeleOp extends OpMode
         frontRightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         backRightMotor.setDirection(DcMotor.Direction.REVERSE);
         frontRightMotor.setDirection(DcMotor.Direction.REVERSE);
-        left.setPosition(0);
-        right.setPosition(1);
-        pusher.setPosition(0);
+        left.setPosition(1);
+        right.setPosition(0);
+        pusherr.setPosition(0);
         I2cDevice range;
         range = hardwareMap.i2cDevice.get("range");
         rangeReader = new I2cDeviceReader(range, new I2cAddr(0x28), 0x04, 2);
@@ -65,8 +65,9 @@ public class SkateboardTeleOp extends OpMode
     @Override
     public void loop()
     {
-        getGamepadValues();
-        convertGamepadToMovement();
+//        getGamepadValues();
+//        convertGamepadToMovement();
+        getMotorValues();
         runMotors();
     }
 
@@ -74,9 +75,46 @@ public class SkateboardTeleOp extends OpMode
     {
         rightTrigger = gamepad1.right_trigger;
         speedMultiplier = rightTrigger / 2;
-        print(speedMultiplier);
+        print("SpeedMult", speedMultiplier);
     }
 
+    public void getMotorValues()
+    {
+        double robotVelocity = 0;
+        double heading = 0;
+        robotVelocity = gamepad1.left_trigger - gamepad1.right_trigger;
+        if (1 < robotVelocity)
+        {
+            robotVelocity = 1;
+        }
+        else if (robotVelocity < -1)
+        {
+            robotVelocity = -1;
+        }
+        double leftStickY = gamepad1.left_stick_y;
+        double leftStickX = gamepad1.left_stick_x;
+        if (leftStickX == 0 && 0 <= leftStickY)
+        {
+            heading = (3*Math.PI)/2;
+        }
+        else if (leftStickX == 0 && leftStickY <= 0)
+        {
+            heading = (3*Math.PI)/2;
+        }
+        else
+        {
+            heading = Math.atan(leftStickY/leftStickX);
+            if (leftStickX < 0) {
+                heading += Math.PI;
+            }
+        }
+        heading += Math.PI/2;
+        heading %= 2*Math.PI;
+        frontLeftPower  = getFrontLeftMecanumVelocity(  robotVelocity, -heading, -gamepad1.right_stick_x);
+        frontRightPower = getFrontRightMecanumVelocity( robotVelocity, -heading, -gamepad1.right_stick_x);
+        backLeftPower   = getBackLeftMecanumVelocity(   robotVelocity, -heading, -gamepad1.right_stick_x);
+        backRightPower  = getBackRightMecanumVelocity(  robotVelocity, -heading, -gamepad1.right_stick_x);
+    }
     public void convertGamepadToMovement()
     {
         // numOfMovements is a counter that counts how many directions that the rover is being pushed in.
@@ -167,24 +205,41 @@ public class SkateboardTeleOp extends OpMode
 
     public void runMotors()
     {
+        frontLeftPower  = clamp(frontLeftPower  );
+        frontRightPower = clamp(frontRightPower );
+        backLeftPower   = clamp(backLeftPower   );
+        backRightPower  = clamp(backRightPower  );
         frontLeftMotor.setPower(    frontLeftPower  );
         frontRightMotor.setPower(   frontRightPower );
         backLeftMotor.setPower(     backLeftPower   );
         backRightMotor.setPower(    backRightPower  );
     }
-
+    public double clamp(double value)
+    {
+        if (value < -1)
+        {
+            print("Clamp", value);
+            value = -1;
+        }
+        else if (1 < value)
+        {
+            print("Clamp", value);
+            value = 1;
+        }
+        return value;
+    }
     @Override
     public void stop()
     {
 
     }
-    public void print(String text)
+    public void print(String key, String text)
     {
-        Log.d("TeleOp", text);
-        telemetry.addData("TeleOp", text);
+        Log.d(key, text);
+        telemetry.addData(key, text);
     }
-    public void print(double text)
+    public void print(String key, double text)
     {
-        print(String.valueOf(text));
+        print(key, String.valueOf(text));
     }
 }
