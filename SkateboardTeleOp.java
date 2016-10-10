@@ -43,8 +43,16 @@ public class SkateboardTeleOp extends OpMode
      * @param stickY The joystick's y value.
      * @return The joystick's heading in radians.
      */
-    public static double joystickToRadians(double stickX, double stickY)
+    public static double joystickToRadians(double stickX, double stickY) throws IllegalArgumentException
     {
+        if (stickX < -1 || 1 < stickX)
+        {
+            throw new IllegalArgumentException("The joystick x value of " + stickX + " is out of bounds from [-1,1].");
+        }
+        else if (stickY < -1 || 1 < stickY)
+        {
+            throw new IllegalArgumentException("The joystick y value of " + stickY + " is out of bounds from [-1,1].");
+        }
         double radians = 0;
         // If stick is on the y axis
         if (stickX == 0)
@@ -75,8 +83,8 @@ public class SkateboardTeleOp extends OpMode
             // If x is positive but y is negative
             else if (0 < stickX && stickY < 0)
             {
-                // Don't ask why but this works
-                radians = 3*Math.PI/2 - radians;
+                // When x is positive but y is negative arctan returns values which are off by 2*Pi
+                radians += 2*Math.PI;
             }
         }
         // Rotate the axis by 90 degrees
