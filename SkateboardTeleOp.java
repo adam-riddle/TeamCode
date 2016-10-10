@@ -45,13 +45,21 @@ public class SkateboardTeleOp extends OpMode
      */
     public static double joystickToRadians(double stickX, double stickY) throws IllegalArgumentException
     {
-        if (stickX < -1 || 1 < stickX)
+        try
         {
-            throw new IllegalArgumentException("The joystick x value of " + stickX + " is out of bounds from [-1,1].");
+            if (stickX < -1 || 1 < stickX) {
+                throw new IllegalArgumentException("The joystick x value of " + stickX + " is out of bounds from [-1,1].");
+            } else if (stickY < -1 || 1 < stickY) {
+                throw new IllegalArgumentException("The joystick y value of " + stickY + " is out of bounds from [-1,1].");
+            }
         }
-        else if (stickY < -1 || 1 < stickY)
+        catch (IllegalArgumentException e)
         {
-            throw new IllegalArgumentException("The joystick y value of " + stickY + " is out of bounds from [-1,1].");
+            if (stickX < -1) { stickX = -1; }
+            if (stickX >  1) { stickX =  1; }
+            if (stickY < -1) { stickY = -1; }
+            if (stickY >  1) { stickY =  1; }
+            e.printStackTrace();
         }
         double radians = 0;
         // If stick is on the y axis
