@@ -46,17 +46,23 @@ public class SkateboardTeleOp extends OpMode
     public double joystickToRadians(float stickX, float stickY)
     {
         double radians = 0;
-        // If stick is centered
-        if (stickX == 0 && 0 <= stickY)
+        // If stick is centered on the X axis
+        if (stickX == 0)
         {
-            // Set direction to be straight forward
-            radians = (3*Math.PI)/2;
-        }
-        // If stick is pushing straight forward
-        else if (stickX == 0 && stickY <= 0)
-        {
-            // Set the direction to be straight forward
-            radians = (3*Math.PI)/2;
+            // And if the stick is centered or pushing forward on the Y axis
+            if (0 <= stickY)
+            {
+                // Set direction to be straight forward
+                radians = (3*Math.PI)/2;
+            }
+            // If stick is pulled backward
+            else if (stickY < 0)
+            {
+                // TODO: Ensure that this is the correct value for "backwards" on a stick
+                // Set the direction to be backwards
+                radians = Math.PI/2;
+            }
+
         }
         else
         {
