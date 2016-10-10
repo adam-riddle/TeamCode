@@ -38,7 +38,7 @@ public class SkateboardTeleOp extends OpMode
     }
 
     /**
-     * This function converts a joystick's direction into a heading in radians. TODO: Test this, determine what direction is zero, and which direction is positive.
+     * This function converts a joystick's direction into a heading in radians.
      * @param stickX The joystick's x value.
      * @param stickY The joystick's y value.
      * @return The joystick's heading in radians.
@@ -46,7 +46,7 @@ public class SkateboardTeleOp extends OpMode
     public static double joystickToRadians(double stickX, double stickY)
     {
         double radians = 0;
-        // If stick is centered on the X axis
+        // If stick is on the y axis
         if (stickX == 0)
         {
             // And if the stick is centered or pushing forward on the Y axis
@@ -58,20 +58,24 @@ public class SkateboardTeleOp extends OpMode
             // If stick is pulled backward
             else if (stickY < 0)
             {
-                // TODO: Ensure that this is the correct value for "backwards" on a stick
                 // Set the direction to be backwards
                 radians = 3*Math.PI/2;
             }
 
         }
+        // If the stick is either above or below the x axis.
         else
         {
+            // Use arctangent to convert stick position into radians
             radians = Math.atan(stickY/stickX);
+            // If x is negative add Pi to the value
             if (stickX < 0) {
                 radians += Math.PI;
             }
+            // If x is positive but y is negative
             else if (0 < stickX && stickY < 0)
             {
+                // Don't ask why but this works
                 radians = 3*Math.PI/2 - radians;
             }
         }
